@@ -5,10 +5,18 @@ namespace Fiap.Web.Students.Controllers;
 
 public class ClientController : Controller
 {
+    
+    private List<ClientModel> _clients;
+
+    public ClientController()
+    {
+        _clients = GenerateMockClients();
+    }
     // GET
     public IActionResult Index()
     {
-        return View();
+        Console.WriteLine(_clients.Count);
+        return View(_clients);
     }
 
     public static List<ClientModel> GenerateMockClients()

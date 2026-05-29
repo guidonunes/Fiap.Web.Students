@@ -1,0 +1,80 @@
+@model List<Fiap.Web.Students.Models.ClientModel>
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Clients</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Clients</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Client ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Birth Date</th>
+        <th>Observation</th>
+        <th>Representative</th>
+        <th>CPF</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var client in Model)
+    {
+        <tr>
+            <td>@client.ClientId</td>
+            <td>@client.FirstName</td>
+            <td>@client.LastName</td>
+            <td>@client.Email</td>
+            <td>@client.BirthDate</td>
+            <td>@client.Observation</td>
+            <td>@client.Representative?.RepresentativeName</td>
+            <td>@client.Representative.Cpf</td>
+            <td>
+                <a href="#">Edit</a>
+                <a href="#">Details</a>
+                <a href="#">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</body>
+</html>
