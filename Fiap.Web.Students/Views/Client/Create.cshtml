@@ -1,0 +1,65 @@
+@model Fiap.Web.Students.Models.ClientModel
+
+<h1>Client</h1>
+
+<h4>New Client</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+
+        <form asp-action="Create" asp-controller="Client" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ClientId" class="control-label"></label>
+                <input asp-for="ClientId" class="form-control" />
+                <span asp-validation-for="ClientId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" type="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="BirthDate" class="control-label"></label>
+                <input asp-for="BirthDate" class="form-control" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Observation" class="control-label"></label>
+                <textarea asp-for="Observation" class="form-control"></textarea>
+                <span asp-validation-for="Observation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="RepresentativeId" class="control-label"></label>
+                <input asp-for="RepresentativeId" class="form-control"/>
+                <span asp-validation-for="RepresentativeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create"  class="btn btn-primary" />
+                <a asp-action="Index" asp-controller="Client" class="btn btn-secondary">Back</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>

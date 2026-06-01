@@ -1,16 +1,19 @@
 using Fiap.Web.Students.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Students.Controllers;
 
 public class ClientController : Controller
 {
-    
+
     private List<ClientModel> _clients;
+    private List<RepresentativeModel> _representatives;
 
     public ClientController()
     {
         _clients = GenerateMockClients();
+        _representatives = GenerateMockRepresentatives();
     }
     // GET
     public IActionResult Index()
@@ -18,6 +21,36 @@ public class ClientController : Controller
         Console.WriteLine(_clients.Count);
         return View(_clients);
     }
+    
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+    
+    [HttpPost]
+    public IActionResult Create(ClientModel clientModel)
+    {
+        Console.WriteLine("Client Successfully Created");
+        TempData["successMessage"] = "Client Successfully Created";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+        var selectListRepresentative = new SelectList(
+            _representatives,
+            nameof(RepresentativeModel.RepresentativeId),
+            nameof(RepresentativeModel.RepresentativeName)
+        );
+        ViewBag.Representatives = selectListRepresentative;
+
+        var client =_clients.Where(c => c.ClientId == id).FirstOrDefault();
+
+        return View(client);
+    }
+    
 
     public static List<ClientModel> GenerateMockClients()
     {
@@ -44,5 +77,30 @@ public class ClientController : Controller
             clients.Add(client);
         }
         return clients;
+    }
+    
+    public static List<RepresentativeModel> GenerateMockRepresentatives()
+    {
+        return new List<RepresentativeModel>
+        {
+            new RepresentativeModel
+            {
+                RepresentativeId = 1,
+                RepresentativeName = "Representative 1",
+                Cpf = "00000000191"
+            },
+            new RepresentativeModel
+            {
+                RepresentativeId = 2,
+                RepresentativeName = "Representative 2",
+                Cpf = "00000000272"
+            },
+            new RepresentativeModel
+            {
+                RepresentativeId = 3,
+                RepresentativeName = "Representative 3",
+                Cpf = "00000000353"
+            }
+        };
     }
 }

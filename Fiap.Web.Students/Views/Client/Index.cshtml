@@ -6,6 +6,11 @@
 
 
 <h1>Clients</h1>
+@if (!string.IsNullOrEmpty((String)TempData["successMessage"]))
+{   
+    <div class="alert alert-warning" role="alert">@TempData["successMessage"]</div>
+}
+
 <p>
     <a asp-controller="Client" asp-action="Create">New Client</a>
 </p>
