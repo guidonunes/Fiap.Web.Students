@@ -69,6 +69,23 @@ public class ClientController : Controller
         }
         return View(client);
     }
+    
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+        var client = _clients.FirstOrDefault(c => c.ClientId == id);
+
+        if (client == null)
+        {
+            return NotFound();
+        }
+
+        _clients.Remove(client);
+
+        TempData["successMessage"] = "Client successfully deleted";
+
+        return RedirectToAction(nameof(Index));
+    }
 
     public static List<ClientModel> GenerateMockClients()
     {

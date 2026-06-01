@@ -43,7 +43,11 @@
             <td>
                 <a  asp-controller="Client" asp-action="Edit" asp-route-id="@client.ClientId">Edit</a>
                 <a  asp-controller="Client" asp-action="Visualize" asp-route-id="@client.ClientId">Details</a>
-                <a  asp-controller="Client" asp-action="Delete" asp-route-id="@client.ClientId">Delete</a>
+                <a asp-action="Delete"
+                   asp-controller="Client"
+                   asp-route-id="@client.ClientId">
+                    Delete
+                </a>
             </td>
         </tr>
     }
