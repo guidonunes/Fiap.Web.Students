@@ -58,6 +58,18 @@ public class ClientController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+    public IActionResult Visualize(int id)
+    {
+        var client = _clients.Where(c => c.ClientId == id).FirstOrDefault();
+        
+        if (client == null)
+        {
+            return NotFound();
+        }
+        return View(client);
+    }
+
     public static List<ClientModel> GenerateMockClients()
     {
         var clients = new List<ClientModel>();
