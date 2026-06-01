@@ -7,8 +7,8 @@ namespace Fiap.Web.Students.Controllers;
 public class ClientController : Controller
 {
 
-    private List<ClientModel> _clients;
-    private List<RepresentativeModel> _representatives;
+    private readonly IList<ClientModel> _clients;
+    private readonly IList<RepresentativeModel> _representatives;
 
     public ClientController()
     {
@@ -51,6 +51,12 @@ public class ClientController : Controller
         return View(client);
     }
     
+    [HttpPost]
+    public IActionResult Edit(ClientModel clientModel)
+    {
+        TempData["successMessage"] = $"Client {clientModel.FirstName} Successfully Updated";
+        return RedirectToAction(nameof(Index));
+    }
 
     public static List<ClientModel> GenerateMockClients()
     {
