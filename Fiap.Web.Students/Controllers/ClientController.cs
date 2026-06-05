@@ -8,29 +8,38 @@ namespace Fiap.Web.Students.Controllers;
 public class ClientController : Controller
 {
 
-    private readonly IList<ClientModel> _clients;
-    private readonly IList<RepresentativeModel> _representatives;
+    
     
     private readonly DatabaseContext _databaseContext;
 
     public ClientController(DatabaseContext databaseContext)
     {
         _databaseContext = databaseContext;
-        _representatives = _databaseContext.Representative.ToList();
-        _clients = _databaseContext.Client.ToList();
-        
     }
     // GET
     public IActionResult Index()
     {
-        Console.WriteLine(_clients.Count);
+        var _clients = _databaseContext.Client.ToList();
+        if (_clients == null || _clients.Count == 0)
+        {
+            _clients = new List<ClientModel>();
+        }
         return View(_clients);
     }
     
     [HttpGet]
     public IActionResult Create()
     {
-        return View();
+        Console.WriteLine("Create() action executed");
+
+        var selectListRepresentative = new SelectList(
+            _databaseContext.Representative.ToList(),
+            nameof(RepresentativeModel.RepresentativeId),
+            nameof(RepresentativeModel.RepresentativeName)
+        );
+        ViewBag.Representatives = selectListRepresentative;
+        
+        return View(new ClientModel());
     }
     
     [HttpPost]
@@ -47,20 +56,22 @@ public class ClientController : Controller
     public IActionResult Edit(int id)
     {
         var selectListRepresentative = new SelectList(
-            _representatives,
+            _databaseContext.Representative.ToList(),
             nameof(RepresentativeModel.RepresentativeId),
             nameof(RepresentativeModel.RepresentativeName)
         );
         ViewBag.Representatives = selectListRepresentative;
 
-        var client =_clients.Where(c => c.ClientId == id).FirstOrDefault();
-
+        var client = _databaseContext.Client.Find(id);
         return View(client);
     }
     
     [HttpPost]
     public IActionResult Edit(ClientModel clientModel)
     {
+        _databaseContext.Client.Update(clientModel);
+        _databaseContext.SaveChanges();
+        
         TempData["successMessage"] = $"Client {clientModel.FirstName} Successfully Updated";
         return RedirectToAction(nameof(Index));
     }
@@ -68,58 +79,34 @@ public class ClientController : Controller
     [HttpGet]
     public IActionResult Visualize(int id)
     {
-        var client = _clients.Where(c => c.ClientId == id).FirstOrDefault();
+        var selectListRepresentatives = new SelectList(_databaseContext.Representative.ToList(), 
+            nameof(RepresentativeModel.RepresentativeId),
+            nameof(RepresentativeModel.RepresentativeName)
+        );
         
-        if (client == null)
-        {
-            return NotFound();
-        }
-        return View(client);
+        ViewBag.Representatives = selectListRepresentatives;
+
+        var consultedClient = _databaseContext.Client.Find(id);
+        return View(consultedClient);
     }
     
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var client = _clients.FirstOrDefault(c => c.ClientId == id);
+        var consultedClient = _databaseContext.Client.Find(id);
 
-        if (client == null)
+        if (consultedClient != null)
         {
-            return NotFound();
+            _databaseContext.Client.Remove(consultedClient);
+            _databaseContext.SaveChanges();
+            TempData["successMessage"] = $"Client {consultedClient} successfully deleted";
         }
-
-        _clients.Remove(client);
-
-        TempData["successMessage"] = "Client successfully deleted";
-
+        else
+        {
+            TempData["successMessage"] = "Ops! Client not found";
+        }
+        
         return RedirectToAction(nameof(Index));
     }
-
-    public static List<ClientModel> GenerateMockClients()
-    {
-        var clients = new List<ClientModel>();
-
-        for (int i = 1; i <= 5; i++)
-        {
-            var client = new ClientModel
-            {
-                ClientId = i,
-                FirstName = $"Client {i}",
-                LastName = $"Surname {i}",
-                Email = $"email{i}@email.com",
-                BirthDate = DateTime.Now.AddYears(-30),
-                Observation = $"Observation {i}",
-                RepresentativeId = i,
-                Representative = new RepresentativeModel
-                {
-                    RepresentativeId = i,
-                    RepresentativeName = "Representative" + i,
-                    Cpf = $"0000000191"
-                }
-            };
-            clients.Add(client);
-        }
-        return clients;
-    }
-    
     
 }
