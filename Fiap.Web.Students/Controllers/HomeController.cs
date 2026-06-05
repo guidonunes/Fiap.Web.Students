@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Fiap.Web.Students.Data;
 using Microsoft.AspNetCore.Mvc;
 using Fiap.Web.Students.Models;
 
@@ -7,14 +8,17 @@ namespace Fiap.Web.Students.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly DatabaseContext _databaseContext;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
     {
         _logger = logger;
+        _databaseContext = databaseContext;
     }
 
     public IActionResult Index()
     {
+       
         return View();
     }
 

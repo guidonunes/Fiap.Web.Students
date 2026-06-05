@@ -19,9 +19,22 @@ public class DatabaseContext: DbContext
         modelBuilder.Entity<RepresentativeModel>(entity =>
         {
             entity.ToTable("TB_REPRESENTATIVE");
+
             entity.HasKey(e => e.RepresentativeId);
-            entity.Property(e=>e.RepresentativeName).IsRequired();
-            entity.HasIndex(e => e.Cpf).IsUnique();
+
+            entity.Property(e => e.RepresentativeId)
+                .HasColumnName("REPRESENTATIVE_ID");
+
+            entity.Property(e => e.RepresentativeName)
+                .HasColumnName("REPRESENTATIVE_NAME")
+                .IsRequired();
+
+            entity.Property(e => e.Cpf)
+                .HasColumnName("CPF")
+                .IsRequired();
+
+            entity.HasIndex(e => e.Cpf)
+                .IsUnique();
         });
-    } 
+    }
 }
