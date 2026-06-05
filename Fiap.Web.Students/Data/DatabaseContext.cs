@@ -5,15 +5,14 @@ namespace Fiap.Web.Students.Data;
 
 public class DatabaseContext: DbContext
 {
+    
+
+    public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+    {
+    }
+    
     public virtual DbSet<RepresentativeModel> Representative { get; set; }
     public virtual DbSet<ClientModel> Client { get; set; }
-    protected DatabaseContext()
-    {
-    }
-
-    public DatabaseContext(DbContextOptions options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

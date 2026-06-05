@@ -6,9 +6,9 @@
 
 
 <h1>Clients</h1>
-@if (!string.IsNullOrEmpty((String)TempData["successMessage"]))
+@if (TempData["successMessage"] is string successMessage && !string.IsNullOrEmpty(successMessage))
 {   
-    <div class="alert alert-warning" role="alert">@TempData["successMessage"]</div>
+    <div class="alert alert-warning" role="alert">@successMessage</div>
 }
 
 <p>
@@ -39,7 +39,7 @@
             <td>@client.BirthDate</td>
             <td>@client.Observation</td>
             <td>@client.Representative?.RepresentativeName</td>
-            <td>@client.Representative.Cpf</td>
+            <td>@client.Representative?.Cpf</td>
             <td>
                 <a  asp-controller="Client" asp-action="Edit" asp-route-id="@client.ClientId">Edit</a>
                 <a  asp-controller="Client" asp-action="Visualize" asp-route-id="@client.ClientId">Details</a>

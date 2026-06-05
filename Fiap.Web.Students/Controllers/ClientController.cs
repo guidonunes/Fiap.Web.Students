@@ -99,7 +99,7 @@ public class ClientController : Controller
                 FirstName = $"Client {i}",
                 LastName = $"Surname {i}",
                 Email = $"email{i}@email.com",
-                BirthDate = DateTime.Now.AddYears(-30).ToString("dd/MM/yyyy"),
+                BirthDate = DateTime.Now.AddYears(-30),
                 Observation = $"Observation {i}",
                 RepresentativeId = i,
                 Representative = new RepresentativeModel
