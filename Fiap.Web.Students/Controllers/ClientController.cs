@@ -1,3 +1,4 @@
+using Fiap.Web.Students.Data;
 using Fiap.Web.Students.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,11 +10,15 @@ public class ClientController : Controller
 
     private readonly IList<ClientModel> _clients;
     private readonly IList<RepresentativeModel> _representatives;
+    
+    private readonly DatabaseContext _databaseContext;
 
-    public ClientController()
+    public ClientController(DatabaseContext databaseContext)
     {
-        _clients = GenerateMockClients();
-        _representatives = GenerateMockRepresentatives();
+        _databaseContext = databaseContext;
+        _representatives = _databaseContext.Representative.ToList();
+        _clients = _databaseContext.Client.ToList();
+        
     }
     // GET
     public IActionResult Index()
@@ -31,7 +36,9 @@ public class ClientController : Controller
     [HttpPost]
     public IActionResult Create(ClientModel clientModel)
     {
-        Console.WriteLine("Client Successfully Created");
+        _databaseContext.Client.Add(clientModel);
+        _databaseContext.SaveChanges();
+        
         TempData["successMessage"] = "Client Successfully Created";
         return RedirectToAction(nameof(Index));
     }
@@ -114,28 +121,5 @@ public class ClientController : Controller
         return clients;
     }
     
-    public static List<RepresentativeModel> GenerateMockRepresentatives()
-    {
-        return new List<RepresentativeModel>
-        {
-            new RepresentativeModel
-            {
-                RepresentativeId = 1,
-                RepresentativeName = "Representative 1",
-                Cpf = "00000000191"
-            },
-            new RepresentativeModel
-            {
-                RepresentativeId = 2,
-                RepresentativeName = "Representative 2",
-                Cpf = "00000000272"
-            },
-            new RepresentativeModel
-            {
-                RepresentativeId = 3,
-                RepresentativeName = "Representative 3",
-                Cpf = "00000000353"
-            }
-        };
-    }
+    
 }

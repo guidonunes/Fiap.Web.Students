@@ -28,4 +28,8 @@
       <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.23.60" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Representative\Index.cshtml" />
+    </ItemGroup>
+
 </Project>
