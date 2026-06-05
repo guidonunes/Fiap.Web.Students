@@ -2,13 +2,12 @@ using Fiap.Web.Students.Data;
 using Fiap.Web.Students.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fiap.Web.Students.Controllers;
 
 public class ClientController : Controller
 {
-
-    
     
     private readonly DatabaseContext _databaseContext;
 
@@ -19,12 +18,14 @@ public class ClientController : Controller
     // GET
     public IActionResult Index()
     {
-        var _clients = _databaseContext.Client.ToList();
-        if (_clients == null || _clients.Count == 0)
+        var clients = _databaseContext.Client
+            .Include(client => client.Representative)
+            .ToList();
+        if (clients.Count == 0)
         {
-            _clients = new List<ClientModel>();
+            clients = new List<ClientModel>();
         }
-        return View(_clients);
+        return View(clients);
     }
     
     [HttpGet]
@@ -99,7 +100,7 @@ public class ClientController : Controller
         {
             _databaseContext.Client.Remove(consultedClient);
             _databaseContext.SaveChanges();
-            TempData["successMessage"] = $"Client {consultedClient} successfully deleted";
+            TempData["successMessage"] = $"Client successfully deleted";
         }
         else
         {
