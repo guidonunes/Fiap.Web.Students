@@ -13,6 +13,7 @@ public class DatabaseContext: DbContext
     
     public virtual DbSet<RepresentativeModel> Representative { get; set; }
     public virtual DbSet<ClientModel> Client { get; set; }
+    public virtual DbSet<ProductModel> Product { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,6 +74,66 @@ public class DatabaseContext: DbContext
                 .WithMany()
                 .HasForeignKey(e => e.RepresentativeId)
                 .IsRequired();
+        });
+
+        modelBuilder.Entity<ProductModel>(entity =>
+        {
+            entity.ToTable("TB_PRODUCT");
+            entity.HasKey(e => e.ProductId);
+            entity.Property(p => p.Name).IsRequired();
+            entity.Property(p => p.Description);
+            entity.Property(p => p.Price).HasColumnType("NUMBER(18,2)");
+
+            entity.HasOne(p => p.Supplier)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SupplierId);
+        });
+
+        modelBuilder.Entity<StoreModel>(entity =>
+        {
+            entity.ToTable("TB_STORE");
+            entity.HasKey(store => store.StoreId);
+            entity.Property(store => store.Name).IsRequired();
+            entity.Property(store => store.Address);
+            
+            entity.HasMany(store => store.Orders)
+                .WithOne(p => p.Store)
+                .HasForeignKey(store => store.StoreId);
+        });
+
+        modelBuilder.Entity<OrderModel>(entity =>
+        {
+            entity.ToTable("TB_ORDER");
+            entity.HasKey(order => order.OrderId);
+            entity.Property(order => order.OrderDate).HasColumnType("DATE");
+            
+            entity.HasOne(order => order.Client)
+                .WithMany()
+                .HasForeignKey(order => order.ClientId);
+
+            entity.HasMany(order => order.OrderProducts)
+                .WithOne(op => op.Order)
+                .HasForeignKey(op => op.OrderId);
+        });
+
+        modelBuilder.Entity<SupplierModel>(entity =>
+        {
+            entity.ToTable("TB_SUPPLIER");
+            entity.HasKey(e => e.SupplierId);
+            entity.Property(e => e.Name).IsRequired();
+        });
+
+        modelBuilder.Entity<OrderProductModel>(entity =>
+        {
+            entity.HasKey(e => new { e.OrderId, e.ProductId });
+
+            entity.HasOne(e => e.Order)
+                .WithMany(e => e.OrderProducts)
+                .HasForeignKey(e => e.ProductId);
+            
+            entity.HasOne(e => e.Product)
+                .WithMany(e=>e.OrderProducts)
+                .HasForeignKey(e => e.OrderId);
         });
     }
 }

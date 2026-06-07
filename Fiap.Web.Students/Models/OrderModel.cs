@@ -13,5 +13,5 @@ public class OrderModel
     public int StoreId { get; set; }
     public StoreModel Store { get; set; }
     
-    public List<ProductModel> OrderProducts { get; set; }
+    public List<OrderProductModel> OrderProducts { get; set; }
 }
