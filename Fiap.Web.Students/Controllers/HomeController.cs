@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Fiap.Web.Students.Data;
+using Fiap.Web.Students.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Fiap.Web.Students.Models;
 
@@ -7,18 +8,18 @@ namespace Fiap.Web.Students.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ICustomLogger _customLogger;
     private readonly DatabaseContext _databaseContext;
 
-    public HomeController(ILogger<HomeController> logger, DatabaseContext databaseContext)
+    public HomeController(ICustomLogger customLogger, DatabaseContext databaseContext)
     {
-        _logger = logger;
+        _customLogger = customLogger;
         _databaseContext = databaseContext;
     }
 
     public IActionResult Index()
     {
-       
+        _customLogger.Log("Servus zusammen!");
         return View();
     }
 

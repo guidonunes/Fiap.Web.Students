@@ -18,7 +18,7 @@ builder.Services.AddDbContext<DatabaseContext>(
 
 #region Register IServiceCollection
 
-builder.Services.AddSingleton<ICustomLogger, MockLogger>();
+builder.Services.AddSingleton<ICustomLogger, FileLogger>();
 #endregion
 
 builder.Services.AddControllersWithViews();

@@ -14,3 +14,11 @@ public class MockLogger: ICustomLogger
         Console.WriteLine(message);
     }
 }
+
+public class FileLogger : ICustomLogger
+{
+    public void Log(string message)
+    {
+        Console.WriteLine("File:" + message);
+    }
+}
