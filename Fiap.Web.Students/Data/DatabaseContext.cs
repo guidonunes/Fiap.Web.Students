@@ -14,6 +14,11 @@ public class DatabaseContext: DbContext
     public virtual DbSet<RepresentativeModel> Representative { get; set; }
     public virtual DbSet<ClientModel> Client { get; set; }
     public virtual DbSet<ProductModel> Product { get; set; }
+    public virtual DbSet<StoreModel> Store { get; set; }
+    public virtual DbSet<SupplierModel> Supplier { get; set; }
+    public virtual DbSet<OrderModel> Order { get; set; }
+    public virtual DbSet<OrderProductModel> OrderProduct { get; set; }
+  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
