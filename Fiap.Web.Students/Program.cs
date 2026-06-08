@@ -1,4 +1,5 @@
 using Fiap.Web.Students.Data;
+using Fiap.Web.Students.Logging;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,11 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddDbContext<DatabaseContext>(
     opt => opt.UseOracle(connectionString).EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
 );
+
+#region Register IServiceCollection
+
+builder.Services.AddSingleton<ICustomLogger, MockLogger>();
+#endregion
 
 builder.Services.AddControllersWithViews();
 
