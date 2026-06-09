@@ -10,6 +10,11 @@ public class DatabaseContext: DbContext
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
     }
+
+    public DatabaseContext()
+    {
+        
+    }
     
     public virtual DbSet<RepresentativeModel> Representative { get; set; }
     public virtual DbSet<ClientModel> Client { get; set; }

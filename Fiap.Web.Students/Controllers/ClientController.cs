@@ -1,5 +1,7 @@
+using AutoMapper;
 using Fiap.Web.Students.Data;
 using Fiap.Web.Students.Models;
+using Fiap.Web.Students.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +13,12 @@ public class ClientController : Controller
     
     private readonly DatabaseContext _databaseContext;
 
-    public ClientController(DatabaseContext databaseContext)
+    private readonly IMapper _mapper;
+
+    public ClientController(DatabaseContext databaseContext, IMapper mapper)
     {
         _databaseContext = databaseContext;
+        _mapper = mapper;
     }
     // GET
     public IActionResult Index()
@@ -31,27 +36,38 @@ public class ClientController : Controller
     [HttpGet]
     public IActionResult Create()
     {
+        var viewModel = new ClientCreateViewModel
+        {
+            Representative = new SelectList(
+                _databaseContext.Representative.ToList(),
+                nameof(RepresentativeModel.RepresentativeId),
+                nameof(RepresentativeModel.RepresentativeName))
+        };
         Console.WriteLine("Create() action executed");
+        
+        return View(viewModel);
+    }
 
-        var selectListRepresentative = new SelectList(
-            _databaseContext.Representative.ToList(),
-            nameof(RepresentativeModel.RepresentativeId),
-            nameof(RepresentativeModel.RepresentativeName)
-        );
-        ViewBag.Representatives = selectListRepresentative;
-        
-        return View(new ClientModel());
-    }
-    
     [HttpPost]
-    public IActionResult Create(ClientModel clientModel)
+    public IActionResult Create(ClientCreateViewModel viewModel)
     {
-        _databaseContext.Client.Add(clientModel);
-        _databaseContext.SaveChanges();
-        
-        TempData["successMessage"] = "Client Successfully Created";
-        return RedirectToAction(nameof(Index));
-    }
+
+        if (ModelState.IsValid)
+        {
+            var clientModel = _mapper.Map<ClientModel>(viewModel);
+            _databaseContext.Client.Add(clientModel);
+            _databaseContext.SaveChanges();
+
+            TempData["successMessage"] = "Client Successfully Created";
+            return RedirectToAction(nameof(Index));
+        }else
+        {
+            viewModel.Representative = new SelectList(_databaseContext.Representative.ToList(), "RepresentativeId", "RepresentativeName");
+            return View(viewModel);
+        }
+
+    
+}
 
     [HttpGet]
     public IActionResult Edit(int id)

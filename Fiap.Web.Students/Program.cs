@@ -1,5 +1,7 @@
 using Fiap.Web.Students.Data;
 using Fiap.Web.Students.Logging;
+using Fiap.Web.Students.Models;
+using Fiap.Web.Students.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,20 @@ builder.Services.AddDbContext<DatabaseContext>(
 #region Register IServiceCollection
 
 builder.Services.AddSingleton<ICustomLogger, FileLogger>();
+#endregion
+
+#region AutoMapper
+
+builder.Services.AddAutoMapper(c =>
+{
+    c.AllowNullCollections = true;
+    c.AllowNullDestinationValues = true;
+
+    c.CreateMap<ClientModel, ClientCreateViewModel>()
+        .ForMember(dest => dest.Representative, opt => opt.Ignore());
+    c.CreateMap<ClientCreateViewModel, ClientModel>()
+        .ForMember(dest => dest.Representative, opt => opt.Ignore());
+}, typeof(ClientModel).Assembly);
 #endregion
 
 builder.Services.AddControllersWithViews();
