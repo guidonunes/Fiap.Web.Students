@@ -14,6 +14,6 @@ public class RepresentativeService : IRepresentativeService
     }
     
     
-    public IEnumerable<RepresentativeModel> GetRepresentatives() => _repository.GetAll();
+    public IEnumerable<RepresentativeModel> GetAll() => _repository.GetAll();
     
 }

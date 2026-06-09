@@ -2,7 +2,7 @@ using Fiap.Web.Students.Models;
 
 namespace Fiap.Web.Students.Data.Repository;
 
-public class ClientRepository
+public class ClientRepository: IClientRepository
 {
     private readonly DatabaseContext _databaseContext;
     

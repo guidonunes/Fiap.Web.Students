@@ -1,6 +1,7 @@
 using AutoMapper;
 using Fiap.Web.Students.Data;
 using Fiap.Web.Students.Models;
+using Fiap.Web.Students.Services;
 using Fiap.Web.Students.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,26 +11,22 @@ namespace Fiap.Web.Students.Controllers;
 
 public class ClientController : Controller
 {
-    
-    private readonly DatabaseContext _databaseContext;
+  
 
     private readonly IMapper _mapper;
+    private readonly IRepresentativeService _representativeService;
+    private readonly IClientService _clientService;
 
-    public ClientController(DatabaseContext databaseContext, IMapper mapper)
+    public ClientController(IMapper mapper, IRepresentativeService representativeService, IClientService clientService)
     {
-        _databaseContext = databaseContext;
         _mapper = mapper;
+        _representativeService = representativeService;
+        _clientService = clientService;
     }
     // GET
     public IActionResult Index()
     {
-        var clients = _databaseContext.Client
-            .Include(client => client.Representative)
-            .ToList();
-        if (clients.Count == 0)
-        {
-            clients = new List<ClientModel>();
-        }
+        var clients = _clientService.GetAll();
         return View(clients);
     }
     
@@ -39,7 +36,7 @@ public class ClientController : Controller
         var viewModel = new ClientCreateViewModel
         {
             Representative = new SelectList(
-                _databaseContext.Representative.ToList(),
+                _representativeService.GetAll(),
                 nameof(RepresentativeModel.RepresentativeId),
                 nameof(RepresentativeModel.RepresentativeName))
         };
@@ -55,39 +52,35 @@ public class ClientController : Controller
         if (ModelState.IsValid)
         {
             var clientModel = _mapper.Map<ClientModel>(viewModel);
-            _databaseContext.Client.Add(clientModel);
-            _databaseContext.SaveChanges();
+            _clientService.Add(clientModel);
+            
 
             TempData["successMessage"] = "Client Successfully Created";
             return RedirectToAction(nameof(Index));
         }else
         {
-            viewModel.Representative = new SelectList(_databaseContext.Representative.ToList(), "RepresentativeId", "RepresentativeName");
+            viewModel.Representative = new SelectList(_representativeService.GetAll(), "RepresentativeId", "RepresentativeName");
             return View(viewModel);
         }
-
-    
 }
 
     [HttpGet]
     public IActionResult Edit(int id)
     {
         var selectListRepresentative = new SelectList(
-            _databaseContext.Representative.ToList(),
+            _representativeService.GetAll(),
             nameof(RepresentativeModel.RepresentativeId),
             nameof(RepresentativeModel.RepresentativeName)
         );
-        ViewBag.Representatives = selectListRepresentative;
 
-        var client = _databaseContext.Client.Find(id);
+        var client = _clientService.GetById(id);
         return View(client);
     }
     
     [HttpPost]
     public IActionResult Edit(ClientModel clientModel)
     {
-        _databaseContext.Client.Update(clientModel);
-        _databaseContext.SaveChanges();
+        _clientService.Update(clientModel);
         
         TempData["successMessage"] = $"Client {clientModel.FirstName} Successfully Updated";
         return RedirectToAction(nameof(Index));
@@ -96,34 +89,22 @@ public class ClientController : Controller
     [HttpGet]
     public IActionResult Visualize(int id)
     {
-        var selectListRepresentatives = new SelectList(_databaseContext.Representative.ToList(), 
+        var selectListRepresentatives = new SelectList(_representativeService.GetAll(), 
             nameof(RepresentativeModel.RepresentativeId),
             nameof(RepresentativeModel.RepresentativeName)
         );
         
-        ViewBag.Representatives = selectListRepresentatives;
+        
 
-        var consultedClient = _databaseContext.Client.Find(id);
+        var consultedClient = _clientService.GetById(id);
         return View(consultedClient);
     }
     
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var consultedClient = _databaseContext.Client.Find(id);
-
-        if (consultedClient != null)
-        {
-            _databaseContext.Client.Remove(consultedClient);
-            _databaseContext.SaveChanges();
-            TempData["successMessage"] = $"Client successfully deleted";
-        }
-        else
-        {
-            TempData["successMessage"] = "Ops! Client not found";
-        }
-        
+        _clientService.Delete(id);
+        TempData["successMessage"] = "Client Successfully Deleted";
         return RedirectToAction(nameof(Index));
     }
-    
 }

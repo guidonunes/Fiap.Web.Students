@@ -1,6 +1,8 @@
 using Fiap.Web.Students.Data;
+using Fiap.Web.Students.Data.Repository;
 using Fiap.Web.Students.Logging;
 using Fiap.Web.Students.Models;
+using Fiap.Web.Students.Services;
 using Fiap.Web.Students.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +23,12 @@ builder.Services.AddDbContext<DatabaseContext>(
 #region Register IServiceCollection
 
 builder.Services.AddSingleton<ICustomLogger, FileLogger>();
+
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
+
+builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 #endregion
 
 #region AutoMapper
